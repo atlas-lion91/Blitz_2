@@ -75,9 +75,9 @@ Considering our server's multi-tier architecture, encompassing the Web, Applicat
 
 ## Implementation Steps
 
-### 1. Infrastructure Blueprint and CI/CD Workflow
+### 1. Infrastructure Blueprint 
 
-   ![Deployment Workflow](Images/Deployment_Pipeline.png)
+   ![Blitz 2 drawio](https://github.com/atlas-lion91/Blitz_2/assets/140761974/35a61ce2-c246-4f27-8f75-a9fb24dde75e)
 
 ### 2. GitHub Integration
 
