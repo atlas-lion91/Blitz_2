@@ -16,17 +16,47 @@ Following the rollout of our updated URL Shortener application, a large-scale te
 
 1. **Application Logging Enhancement**
 
-   Modified `application.py` to integrate logging capabilities.
+  - Verified AWS CLI Installation Locally:
+  - Checked for the presence of AWS CLI locally and confirmed it was not installed.
+  - Installed AWS CLI using the command: `sudo apt install awscli`.
+  - Verified the successful installation by running: `aws --version`.
 
-   ![Logging Addition](images/Application_py_add_logging.png)
+- Configured AWS CLI:
+  - Configured AWS CLI using the command: `aws configure`.
 
-2. **Nginx Configuration Tweaks**
+- Ensured Application Availability:
+  - Confirmed that the application was running.
 
-   Adjusted Nginx to handle a surge in requests.
+- Added Logging to the Application:
+  - Imported the logging module.
+  - Configured logging to write to the 'app.log' file using `logging.basicConfig`.
+    
+  ![image](https://github.com/atlas-lion91/Blitz_2/assets/140761974/dac40630-e388-4f0a-b4b0-823c99d844f2)
 
-   ![Nginx Adjustments 1](images/Nginx_config_1.png)
-   
-   ![Nginx Adjustments 2](images/Nginx_config_2.png)
+2. **Nginx Configuration Updates:**
+
+- Configured Nginx to efficiently handle a higher number of requests.
+- Updated the setting "worker_processes" from "auto" to "8" to optimize server performance.
+- Increased the "worker_connections" from "768" to "2000" to accommodate more concurrent connections.
+- Uncommented the line "multi_accept on;" to enable the "multi_accept" feature for improved efficiency.
+
+   ![Nginx_config](https://github.com/atlas-lion91/Blitz_2/assets/140761974/8a26c906-3dad-47a6-9a9b-fef67759e6d6)
+- Optimized Nginx for quicker loading times by enabling Gzip compression.
+  <img width="1276" alt="Nginx config 2" src="https://github.com/atlas-lion91/Blitz_2/assets/140761974/c07bb840-1ce8-42ff-b1ca-9ee64a707b37">
+
+ *Nginx serves as a proxy server.*
+ *Gunicorn is responsible for running the Flask application.*
+
+*Running Nginx in front of the application serves the following purposes:*
+
+- *Protection:* It acts as a protective layer for the application.
+
+- *Data Persistence:* While the application currently saves data in a JSON file, future plans include implementing more robust data persistence solutions.
+
+- *Security Enhancement:* An additional layer of security is achieved by closing the Gunicorn port and routing incoming traffic through Nginx.
+
+
+
 
 3. **Stress Test Package Installation**
 
@@ -41,10 +71,11 @@ Following the rollout of our updated URL Shortener application, a large-scale te
    ```bash
    sudo nice -n -20 stress-ng --cpu 2
    ```
+   - This script runs the stress-ng program with a high-priority setting, simulating a CPU-intensive workload using two CPU cores, and it runs this process in the background. This can be used for testing how well a system handles high CPU load or for benchmarking purposes.
 
 ## Performance Outcomes
 
-Despite our preparations, the QA test was not entirely successful. We found that 500 out of the 14,000 requests failed. Additionally, our CPU utilization skyrocketed to 100%.
+Despite our preparations, the QA test was not entirely successful. We found that 300 of the 14,000 requests failed. Additionally, our CPU utilization skyrocketed to 100%.
 
 ![QA Test Outcome](images/QA_Test_Notification.png)
 
