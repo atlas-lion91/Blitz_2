@@ -75,9 +75,10 @@ Following the rollout of our updated URL Shortener application, a large-scale te
 
 ## Performance Outcomes
 
-Despite our preparations, the QA test was not entirely successful. We found that 300 of the 14,000 requests failed. Additionally, our CPU utilization skyrocketed to 100%.
+Despite our preparations, the QA test was not entirely successful. We found that 8 of the 14,000 requests failed. Additionally, our CPU utilization skyrocketed to 99.7%.
 
-![QA Test Outcome](images/QA_Test_Notification.png)
+![image](https://github.com/atlas-lion91/Blitz_2/assets/140761974/aaf96a7d-6082-43b4-8bb5-ddc62e8cd38c)
+
 
 ### Reliability Testing and Insights
 
@@ -87,89 +88,57 @@ Running a heavy load of 14,000 requests while concurrently executing the `stress
 
 Examples of CPU utilization on a t2.medium instance (2 CPUs) when subjected to stress:
 
-- ![Stress Test Result 1](images/Deploy_4_user1_Stress_Test.png)
-- ![Stress Test Result 2](images/Deploy_4_user0_Stress_Test.png)
+- ![image](https://github.com/atlas-lion91/Blitz_2/assets/140761974/7322fe05-f123-412a-8ce9-2fa5483d2351)
 
 Our observation was that the two CPUs were nearly saturated at 99% even without any active requests or Jenkins builds. We believe we might need to upgrade our resources, given the three-tier structure of our application.
 
 #### Testing on t2.xlarge
 
-The same stress test on a t2.xlarge instance produced the following outcomes:
+During the stress test, where the command `sudo nice -n -20 stress-ng --cpu 2` was executed, and multiple Jenkins builds were simultaneously running on a t2.xlarge instance, the following observations were made regarding CPU utilization:
 
-- ![Stress Test Result 1](images/CPU_1_Deploy.png)
-- ![Stress Test Result 2](images/CPU_2_Deploy.png)
+- Three out of the four CPUs were operating at approximately 75% capacity or higher.
+- One CPU was running at around 13% capacity.
+
+Considering the current resource usage, it appears that even with four CPUs, the system may struggle to handle the additional stress of accommodating a minimum of 14,000 requests.
+
 
 
 Considering our server's multi-tier architecture, encompassing the Web, Application, and Data tiers, simply doubling the CPUs might not suffice.
 
 ---
 
-## Implementation Steps
 
 ### 1. Infrastructure Blueprint 
 
    ![Blitz 2 drawio](https://github.com/atlas-lion91/Blitz_2/assets/140761974/35a61ce2-c246-4f27-8f75-a9fb24dde75e)
-
-### 2. GitHub Integration
-
-GitHub is our primary code repository. It facilitates Jenkins in the build, test, and deploy phases of the URL Shortener app. After updating and merging branches, we push the main branch back to GitHub.
-
-To ensure seamless integration between our EC2 instance and the repository, generate and provide a token from GitHub to the EC2.
-
-
-
-### 3. Setting Up VPC & EC2
-
-Follow the instructions to:
-
-
-
-### 4. EC2 Configurations
-
-**Python Configurations**: Python facilitates various stages of the application.
-
-
-
-**Nginx Installation**: Serves as the web server for the application.
-
-
-
-**Jenkins Setup**: Automates the different stages of the application's lifecycle.
-
-
-
-### 5. CloudWatch Configuration & Alarm Setting
-
-CloudWatch tracks resource consumption, and alarms help ensure resource usage doesn't go unnoticed.
-
-- [Install & Set Up CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/install-CloudWatch-Agent-on-EC2-Instance-fleet.html)
-- [Alarm Creation in CloudWatch](https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/ConsoleAlarms.html)
-
-### 6. GitHub Webhook Integration
-
-To allow for automatic triggering of Jenkins builds upon code commits to GitHub, webhooks are utilized.
-
-
-
-### 7. Jenkins Build Configuration
-
-Jenkins allows for the creation of builds tailored to specific requirements.
-
 
 
 ---
 
 ## Conclusions and Recommendations
 
-Upon evaluation of AWS's diverse instance offerings, we believe that for singular builds, our current t2.medium instance might be overkill. However, for consecutive builds, 
+### Enhancing CPU Resources for Improved Performance
 
-Issues observed:
+To enhance system performance, we have two recommended options:
 
-1. Initial build didn't generate a notification, potentially due to CloudWatch's initial setup delay.
+### Increase CPU Cores:
 
-Future Optimization Areas:
+Increase the number of CPU cores to 8 by choosing between the `t2.2xlarge` or `c5.2xlarge` instance types. The key difference lies in their memory configurations: `t2.2xlarge` offers 32 GiB, while `c5.2xlarge` provides 16 GiB of memory. Given that this instance hosts our data tier, we strongly recommend the `t2.2xlarge` instance with 32 GiB of memory for optimal performance.
 
-- Infrastructure automation using tools like Terraform.
+### Separate Application and Data Tiers:
+
+Consider segregating the application tier and data tier into separate instances. In this case:
+
+- Deploy the web tier on an instance equipped with 4 CPUs.
+- Place the application and data tiers on a separate instance, which can suffice with 2 CPUs.
+
+This approach not only enhances security by isolating the application and web tiers but also optimizes resource allocation. However, please be aware that adding an additional instance will result in incremental costs.
+
+Weigh the advantages of both options against your specific requirements and budget constraints to determine the most suitable approach for your infrastructure.
+
+### Infrastructure Automation:
+Consider implementing infrastructure automation using tools like Terraform. This will help streamline provisioning, scaling, and management of your infrastructure.
+
 
 ---
 
