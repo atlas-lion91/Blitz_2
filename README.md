@@ -10,7 +10,7 @@
 
 ## Objective
 
-Following the rollout of our updated URL Shortener application, a large-scale test involving 14,000 server requests was conducted. Unfortunately 500 of these were unsuccessful. We must devise a strategy to handle all 14,000 server requests successfully.
+Following the rollout of our updated URL Shortener application, a large-scale test involving 14,000 server requests was conducted. Unfortunately 8 of these were unsuccessful. We must devise a strategy to handle all 14,000 server requests successfully.
 
 ## Testing Setup
 
