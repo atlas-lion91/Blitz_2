@@ -119,7 +119,7 @@ Considering our server's multi-tier architecture, encompassing the Web, Applicat
 
 ### Enhancing CPU Resources for Improved Performance
 
-To enhance system performance, we have two recommended options:
+To enhance system performance, we have a few recommended options:
 
 ### Increase CPU Cores:
 
